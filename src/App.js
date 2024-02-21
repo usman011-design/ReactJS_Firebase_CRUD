@@ -69,52 +69,51 @@ function App() {
   return (
     <div className="App">
       <h1>Firebase CRUD App</h1>
-      <div className="form-inputs">
+      <div className="form-group">
         <input
-          className="form-input"
           placeholder="Name..."
-          onChange={(event) => {
-            setName(event.target.value);
-          }}
+          value={name}
+          onChange={(event) => setName(event.target.value)}
         />
         <input
-          className="form-input"
+          type="number"
           placeholder="Age..."
-          onChange={(event) => {
-            setAge(event.target.value);
-          }}
+          value={age}
+          onChange={(event) => setAge(event.target.value)}
         />
         <input
-          className="form-input"
           placeholder="Email..."
-          onChange={(event) => {
-            setEmail(event.target.value);
-          }}
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
         />
         <input
-          className="form-input"
           placeholder="Address..."
-          onChange={(event) => {
-            setAddress(event.target.value);
-          }}
+          value={address}
+          onChange={(event) => setAddress(event.target.value)}
         />
-        <button className="button" onClick={createUser}>Create User</button>
       </div>
+      <button onClick={createUser}>Create User</button>
       <div className="user-list">
-        {users.map((user) => {
-          return (
-            <div className="user-card" key={user.id}>
-              <h2>Name: {user.name}</h2>
-              <p>Age: {user.age}</p>
-              <p>Email: {user.email}</p>
-              <p>Address: {user.address}</p>
-              <div className="user-actions">
-                <button className="button" onClick={() => updateUser(user.id, user.age)}>Increment Age</button>
-                <button className="button" onClick={() => deleteUser(user.id)}>Delete User</button>
-              </div>
-            </div>
-          );
-        })}
+        {users.map((user) => (
+          <div className="user-card" key={user.id}>
+            <h2>{user.name}</h2>
+            <p>Age: {user.age}</p>
+            <p>Email: {user.email}</p>
+            <p>Address: {user.address}</p>
+            <button
+              className="increment-age user-action"
+              onClick={() => updateUser(user.id, user.age)}
+            >
+              Increment Age
+            </button>
+            <button
+              className="user-action"
+              onClick={() => deleteUser(user.id)}
+            >
+              Delete User
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );
