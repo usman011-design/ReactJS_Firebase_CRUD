@@ -1,31 +1,50 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import { db } from "./firebase-config";
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-} from "@firebase/firestore";
+import { useSnackbar } from 'notistack';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where } from "@firebase/firestore";
+
 
 function App() {
   const [name, setName] = useState("");
   const [age, setAge] = useState(0);
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
+  const { enqueueSnackbar } = useSnackbar();
 
   const [users, setUsers] = useState([]);
   const usersCollectionRef = collection(db, "users");
 
   const createUser = async () => {
-    await addDoc(usersCollectionRef, {
-      name: name,
-      age: Number(age),
-      email: email,
-      address: address,
-    });
+    if (!name.trim() || !age || !email.trim() || !address.trim()) {
+      enqueueSnackbar('Please fill in all fields before creating a user.', { variant: 'warning' });
+      return;
+    }
+
+    // Check for duplicate email
+    const querySnapshot = await getDocs(query(usersCollectionRef, where("email", "==", email.trim())));
+    if (!querySnapshot.empty) {
+      enqueueSnackbar('A user with this email already exists.', { variant: 'error' });
+      return;
+    }
+
+    try {
+      await addDoc(usersCollectionRef, {
+        name: name.trim(),
+        age: Number(age),
+        email: email.trim(),
+        address: address.trim(),
+      });
+      enqueueSnackbar('User created successfully.', { variant: 'success' });
+      // Clear the form fields after successful creation
+      setName('');
+      setAge('');
+      setEmail('');
+      setAddress('');
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      enqueueSnackbar('Failed to create user.', { variant: 'error' });
+    }
   };
 
   const updateUser = async (id, age) => {
