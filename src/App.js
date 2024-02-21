@@ -16,35 +16,17 @@ function App() {
   const usersCollectionRef = collection(db, "users");
 
   const createUser = async () => {
-    if (!name.trim() || !age || !email.trim() || !address.trim()) {
-      enqueueSnackbar('Please fill in all fields before creating a user.', { variant: 'warning' });
+    if (!name || !age || !email || !address) {
+      alert("Please fill in all fields");
       return;
     }
-
-    // Check for duplicate email
-    const querySnapshot = await getDocs(query(usersCollectionRef, where("email", "==", email.trim())));
-    if (!querySnapshot.empty) {
-      enqueueSnackbar('A user with this email already exists.', { variant: 'error' });
+    // Check for duplicate entries based on a unique attribute, e.g., email
+    const isDuplicate = users.some(user => user.email === email);
+    if (isDuplicate) {
+      alert("User with this email already exists");
       return;
     }
-
-    try {
-      await addDoc(usersCollectionRef, {
-        name: name.trim(),
-        age: Number(age),
-        email: email.trim(),
-        address: address.trim(),
-      });
-      enqueueSnackbar('User created successfully.', { variant: 'success' });
-      // Clear the form fields after successful creation
-      setName('');
-      setAge('');
-      setEmail('');
-      setAddress('');
-    } catch (error) {
-      console.error("Error adding document: ", error);
-      enqueueSnackbar('Failed to create user.', { variant: 'error' });
-    }
+    await addDoc(usersCollectionRef, { name, age: Number(age), email, address });
   };
 
   const updateUser = async (id, age) => {
@@ -94,26 +76,20 @@ function App() {
       </div>
       <button onClick={createUser}>Create User</button>
       <div className="user-list">
-        {users.map((user) => (
-          <div className="user-card" key={user.id}>
-            <h2>{user.name}</h2>
-            <p>Age: {user.age}</p>
-            <p>Email: {user.email}</p>
-            <p>Address: {user.address}</p>
-            <button
-              className="increment-age user-action"
-              onClick={() => updateUser(user.id, user.age)}
-            >
-              Increment Age
-            </button>
-            <button
-              className="user-action"
-              onClick={() => deleteUser(user.id)}
-            >
-              Delete User
-            </button>
-          </div>
-        ))}
+      {users.map((user, index) => {
+  return (
+    <div key={user.id} className="user-card" style={{animationDelay: `${index * 0.1}s`}}>
+      <h1>Name: {user.name}</h1>
+      <p>Age: {user.age}</p>
+      <p>Email: {user.email}</p>
+      <p>Address: {user.address}</p>
+      <div>
+        <button className="increment-age" onClick={() => updateUser(user.id, user.age)}>Increment Age</button>
+        <button className="delete-user" onClick={() => deleteUser(user.id)}>Delete User</button>
+      </div>
+    </div>
+  );
+})}     
       </div>
     </div>
   );
