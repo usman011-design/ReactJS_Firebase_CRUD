@@ -50,59 +50,55 @@ function App() {
   return (
     <div className="App">
       <h1>Firebase CRUD App</h1>
-      <input
-        placeholder="Name..."
-        onChange={(event) => {
-          setName(event.target.value);
-        }}
-      />
-      <input
-        placeholder="Age..."
-        onChange={(event) => {
-          setAge(event.target.value);
-        }}
-      />
-      <input
-        placeholder="Email..."
-        onChange={(event) => {
-          setEmail(event.target.value);
-        }}
-      />
-      <input
-        placeholder="Address..."
-        onChange={(event) => {
-          setAddress(event.target.value);
-        }}
-      />
-      <button onClick={createUser}>Create User</button>
-      {users.map((user) => {
-        return (
-          <>
-            {" "}
-            <h1>Name: {user.name}</h1>
-            <h1>Age: {user.age}</h1>
-            <button
-              onClick={() => {
-                updateUser(user.id, user.age);
-              }}
-            >
-              increment age
-            </button>
-            <button
-              onClick={() => {
-                deleteUser(user.id);
-              }}
-            >
-              {" "}
-              Delete User
-            </button>
-            <h1>Email: {user.email}</h1>
-            <h1>address: {user.address}</h1>
-          </>
-        );
-      })}
+      <div className="form-inputs">
+        <input
+          className="form-input"
+          placeholder="Name..."
+          onChange={(event) => {
+            setName(event.target.value);
+          }}
+        />
+        <input
+          className="form-input"
+          placeholder="Age..."
+          onChange={(event) => {
+            setAge(event.target.value);
+          }}
+        />
+        <input
+          className="form-input"
+          placeholder="Email..."
+          onChange={(event) => {
+            setEmail(event.target.value);
+          }}
+        />
+        <input
+          className="form-input"
+          placeholder="Address..."
+          onChange={(event) => {
+            setAddress(event.target.value);
+          }}
+        />
+        <button className="button" onClick={createUser}>Create User</button>
+      </div>
+      <div className="user-list">
+        {users.map((user) => {
+          return (
+            <div className="user-card" key={user.id}>
+              <h2>Name: {user.name}</h2>
+              <p>Age: {user.age}</p>
+              <p>Email: {user.email}</p>
+              <p>Address: {user.address}</p>
+              <div className="user-actions">
+                <button className="button" onClick={() => updateUser(user.id, user.age)}>Increment Age</button>
+                <button className="button" onClick={() => deleteUser(user.id)}>Delete User</button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
 
-export default App;
+export default App
